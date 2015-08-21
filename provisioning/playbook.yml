@@ -1,0 +1,81 @@
+---
+
+# POSTGRES
+
+- hosts: all
+  sudo: yes
+  tasks: 
+    - name: ensure apt cache is up to date
+      apt: update_cache=yes
+    - name: ensure Postgres packages are installed
+      apt: name={{item}}
+      with_items:
+        - postgresql
+        - libpq-dev
+        - python-psycopg2
+
+- hosts: all
+  sudo: yes
+  sudo_user: postgres
+
+  vars:
+    dbname: myapp
+    dbuser: philip
+    dbpassword: supersecret
+
+  tasks:
+  - name: ensure database is created
+    postgresql_db: name={{dbname}}
+
+  - name: ensure user has access to database
+    postgresql_user: db={{dbname}} name={{dbuser}} password={{dbpassword}} priv=ALL
+
+  - name: ensure user does not have unnecessary privileges
+    postgresql_user: name={{dbuser}} role_attr_flags=NOSUPERUSER,NOCREATEDB
+
+  - name: ensure user has password verification for psql cli access
+    lineinfile: dest=/etc/postgresql/9.1/main/pg_hba.conf
+      regexp='^#?local all {{dbuser}}\s*'
+      line='local all {{dbuser}} md5'
+      state=present
+    notify: restart postgresql
+
+  - name: ensure postgres is started and enabled at boot
+    service: name=postgresql
+             enabled=yes
+             state=started
+
+  handlers:
+  - name: restart postgresql
+    service: name=postgresql state=restarted
+
+
+# TOMCAT
+- hosts: all
+  sudo: yes
+  tasks: 
+  - name: ensure jdk is installed
+    apt: name=default-jdk
+
+  - name: ensure JAVA_HOME env is set
+    lineinfile: dest=/home/vagrant/.bashrc
+      regexp='^#?export JAVA_HOME'
+      line='export JAVA_HOME=/usr/lib/jvm/default_java'
+      state=present
+
+  - name: ensure tomcat is installed
+    apt: name={{item}}
+    with_items:
+      - tomcat7
+      - tomcat7-admin
+
+  - name: ensure tomcat env vars are set
+    lineinfile: dest=/home/vagrant/.bashrc
+      regexp='^#?export CATALINA_HOME='
+      line='export CATALINA_HOME=/usr/share/tomcat7'
+
+  - name: Configure tomcat users
+    template: src=templates/tomcat-users.xml dest=/etc/tomcat7
+
+  - name: Ensure tomcat is started and enabled at boot
+    service: name=tomcat7 state=started enabled=yes
