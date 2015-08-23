@@ -1,0 +1,20 @@
+---
+- hosts: all
+  sudo: yes
+  tasks: 
+  - name: ensure tomcat is installed
+    apt: name={{item}}
+    with_items:
+      - tomcat7
+      - tomcat7-admin
+
+  - name: ensure tomcat env vars are set
+    lineinfile: dest=/home/vagrant/.bashrc
+      regexp='^#?export CATALINA_HOME='
+      line='export CATALINA_HOME=/usr/share/tomcat7'
+
+  - name: Configure tomcat users
+    template: src=templates/tomcat-users.xml dest=/etc/tomcat7
+
+  - name: Ensure tomcat is started and enabled at boot
+    service: name=tomcat7 state=started enabled=yes

@@ -1,0 +1,5 @@
+---
+- include: roles/common/common.yml
+- include: roles/postgres/postgres.yml
+- include: roles/java/java.yml
+- include: roles/tomcat/tomcat.yml
