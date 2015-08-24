@@ -19,3 +19,9 @@
 
     - name: copy BCEL prereq for jonas
       copy: src=files/bcel-5.1.jar dest=/usr/share/ant/bcel-5.1.jar
+
+    - name: download jonas
+      get_url: http://download.forge.objectweb.org/jonas/jonas-full-5.3.0-bin.tar.gz dest=/tmp/jonas-full-5.3.0-bin.tar.gz
+
+    - name: Install jonas
+      unarchive: src=/tmp/jonas-full-5.3.0-bin.tar.gz dest=/usr/local/jonas copy=no
