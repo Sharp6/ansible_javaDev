@@ -4,3 +4,10 @@
   tasks: 
     - name: ensure apt cache is up to date
       apt: update_cache=yes
+
+    - name: install vim
+      apt: name=vim
+
+    - name: install git
+      apt: name=git
+

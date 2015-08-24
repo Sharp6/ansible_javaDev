@@ -16,3 +16,6 @@
         regexp='^#?PATH=$ANT_HOME'
         line='PATH=$ANT_HOME/bin;export PATH'
         state=present
+
+    - name: copy BCEL prereq for jonas
+      copy: src=files/bcel-5.1.jar dest=/usr/share/ant/bcel-5.1.jar
