@@ -1,0 +1,18 @@
+---
+- hosts: all
+  sudo: yes
+  tasks: 
+    - name: ensure ANT 1.7 is installed
+      apt: name=ant1.7
+
+    - name: ensure ANT_HOME env is set
+      lineinfile: dest=/home/vagrant/.bashrc
+        regexp='^#?export ANT_HOME'
+        line='export ANT_HOME=/usr/share/ant'
+        state=present
+
+    - name: ensure ANT is in path
+      lineinfile: dest=/home/vagrant/.bashrc
+        regexp='^#?PATH=$ANT_HOME'
+        line='PATH=$ANT_HOME/bin;export PATH'
+        state=present
