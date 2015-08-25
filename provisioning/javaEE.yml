@@ -1,6 +1,7 @@
 ---
-- include: roles/common/common.yml
-- include: roles/postgres/postgres.yml
-- include: roles/java/java.yml
-- include: roles/jonas/jonas.yml
-
+- name Install java EE machine
+  roles:
+    - common
+    - postgres
+    - java
+    - jonas

@@ -1,0 +1,12 @@
+---
+- hosts: all
+  sudo: yes
+  tasks:
+   - name: ensure jdk is installed
+     apt: name=default-jdk
+
+    - name: ensure JAVA_HOME env is set
+      lineinfile: 
+        dest=/home/vagrant/.bashrc
+        line='export JAVA_HOME={{ JAVA_HOME }}'
+        state=present

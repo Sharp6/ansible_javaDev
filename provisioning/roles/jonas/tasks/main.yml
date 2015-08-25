@@ -1,0 +1,27 @@
+---
+- hosts: all
+  sudo: yes
+  tasks: 
+    - name: ensure ANT 1.7 is installed
+      apt: name=ant1.7
+
+    - name: ensure ANT_HOME env is set
+      lineinfile: dest=/home/vagrant/.bashrc
+        regexp='^#?export ANT_HOME'
+        line='export ANT_HOME=/usr/share/ant'
+        state=present
+
+    - name: ensure ANT is in path
+      lineinfile: dest=/home/vagrant/.bashrc
+        regexp='^#?PATH=$ANT_HOME'
+        line='PATH=$ANT_HOME/bin;export PATH'
+        state=present
+
+    - name: copy BCEL prereq for jonas
+      copy: src=files/bcel-5.1.jar dest=/usr/share/ant/bcel-5.1.jar
+
+    - name: download jonas
+      get_url: http://download.forge.objectweb.org/jonas/jonas-full-5.3.0-bin.tar.gz dest=/tmp/jonas-full-5.3.0-bin.tar.gz
+
+    - name: Install jonas
+      unarchive: src=/tmp/jonas-full-5.3.0-bin.tar.gz dest=/usr/local/jonas copy=no

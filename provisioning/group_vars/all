@@ -1,0 +1,4 @@
+# Vars that are visible for all roles
+
+# Java config
+JAVA_HOME: /usr/lib/jvm/default_java

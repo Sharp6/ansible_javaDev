@@ -1,0 +1,7 @@
+---
+- name Install NS machine
+  roles:
+    - common
+    - hsqldb
+    - java
+    - jonas
